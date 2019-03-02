@@ -1,0 +1,30 @@
+{
+  "name": "DiscordBot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "buffer": "^5.2.1",
+    "bufferutil": "^3.0.5",
+    "discord.js": "^11.4.2",
+    "enmap": "^4.7.1",
+    "erlpack": "github:discordapp/erlpack",
+    "ffmpeg": "0.0.4",
+    "libsodium-wrappers": "^0.7.3",
+    "node-opus": "^0.2.9",
+    "opusscript": "0.0.6",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
+    "simple-youtube-api": "^5.0.2",
+    "spotify-web-api-node": "^4.0.0",
+    "uws": "^99.0.0",
+    "xmlhttprequest": "^1.8.0",
+    "ytdl-core": "^0.24.0"
+  }
+}
