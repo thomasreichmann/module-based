@@ -181,23 +181,6 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                     })
                                     .catch(err => console.log(err))
                             }
-
-                            // function queueVideos() {
-                            //     let song = songs[0]
-
-                            //     youtube.searchVideos(`${song.title} ${song.artist}`, 1)
-                            //         .then(video => {
-
-                            //             queue.addSong(video[0].url, video[0].title)
-
-                            //             songs.shift()
-
-                            //             if (songs.length > 0) queueVideos();
-                            //         })
-                            //         .catch(err => console.log(`Error on getAlbumTracks:\n${err}`))
-                            // }
-
-                            // queueVideos()
                         })
                         .catch(err => console.error(err))
                 }
