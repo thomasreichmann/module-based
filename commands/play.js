@@ -87,12 +87,10 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
 
                 let index = args[0].search(/(playlist|track|album)/)
                 let parsed = args[0].substr(index).split("/")
+                // Define se temos um playlist|track|album
                 let type = parsed[0]
+                // Define o id da playlist|track|album
                 let id = parsed[1]
-
-                let songs = []
-
-                //console.log(type, parsed)
 
                 if (type == "track") {
                     console.log(`Found track`)
@@ -113,54 +111,15 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                         .then(data => {
                             let songs = []
 
-                            for (song of data.body.items) {
+                            for (item of data.body.items) {
                                 if (!songs.push) return
 
                                 songs.push({
-                                    title: song.name,
-                                    artist: song.artists[0].name
+                                    title: item.name,
+                                    artist: item.artists[0].name,
+                                    url: ''
                                 })
                             }
-
-                            function queueVideos() {
-                                let song = songs[0]
-
-                                youtube.searchVideos(`${song.title} ${song.artist}`, 1)
-                                    .then(video => {
-
-                                        queue.addSong(video[0].url, video[0].title)
-
-                                        songs.shift()
-
-                                        if (songs.length > 0) queueVideos();
-                                    })
-                                    .catch(err => console.log(`Error on getAlbumTracks:\n${err}`))
-                            }
-
-                            queueVideos()
-                        })
-                        .catch(err => console.error(err))
-                } else if (type == "playlist") {
-                    sp.getPlaylistTracks(id)
-                        .then(data => {
-
-                            let songs = []
-
-                            let i = 0;
-                            for (item of data.body.tracks.items) {
-                                if (!songs.push) return
-
-                                songs.push({
-                                    title: item.track.name,
-                                    artist: item.track.artists[0].name,
-                                    url: '',
-                                    id: i
-                                })
-
-                                i++
-                            }
-
-                            //console.log(songs)
 
                             let j = 0;
                             for (let i = 0; i < songs.length; i++) {
@@ -172,7 +131,44 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                         Apenas passe as musicas para a queue quando recebermos a ultima url requisitada j e utilizado 
                                         para manter conta de quantas urls ja foram recebidas, quando j == quantidade de musicas,
                                         nos podemos passar as musicas para a queue.
-                                         */
+                                        */
+                                        if (j === songs.length - 1) {
+                                            songs.forEach(song => queue.addSong(song.url, song.title))
+                                        }
+
+                                        j++
+                                    })
+                                    .catch(err => console.log(err))
+                            }
+                        })
+                        .catch(err => console.error(err))
+                } else if (type == "playlist") {
+                    sp.getPlaylistTracks(id)
+                        .then(data => {
+
+                            let songs = []
+
+                            for (item of data.body.tracks.items) {
+                                if (!songs.push) return
+
+                                songs.push({
+                                    title: item.track.name,
+                                    artist: item.track.artists[0].name,
+                                    url: ''
+                                })
+                            }
+
+                            let j = 0;
+                            for (let i = 0; i < songs.length; i++) {
+
+                                youtube.searchVideos(`${songs[i].title} ${songs[i].artist}`, 1)
+                                    .then(video => {
+                                        songs[i].url = video[0].url
+                                        /** 
+                                        Apenas passe as musicas para a queue quando recebermos a ultima url requisitada j e utilizado 
+                                        para manter conta de quantas urls ja foram recebidas, quando j == quantidade de musicas,
+                                        nos podemos passar as musicas para a queue.
+                                        */
                                         if (j === songs.length - 1) {
                                             songs.forEach(song => queue.addSong(song.url, song.title))
                                         }
