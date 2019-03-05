@@ -13,7 +13,8 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
     const guild = message.guild
     let queues = client.queues
 
-    if (!message.member.voiceChannel) return message.reply("Voce nao esta em um Voice channel"); // acaba o comando caso o usuario nao esteja em um voice channel
+    // Finaliza o comando caso o usuario nao esteja em um voice channel
+    if (!message.member.voiceChannel) return message.reply("Voce nao esta em um Voice channel");
 
     if (args.length == 0) return message.reply("Especifique um video ou playlist para ser tocado!");
 
@@ -23,7 +24,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
             let queue = client.queues[guild.id]
 
             if (queue === undefined) {
-                queues[guild.id] = new Queue(client, guild, connection)
+                queues[guild.id] = new Queue(client, guild, connection, message.channel)
                 queue = queues[guild.id]
             }
 
@@ -39,11 +40,10 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                             .then(videos => {
                                 // Indentificamos uma playlist, lidar com ela
 
-                                console.log(`\nUma playlist foi adicionada ${playlist.title}`)
+                                console.log(`Uma playlist foi adicionada ${playlist.title}\n`)
 
                                 videos.forEach(video => {
                                     queue.addSong(video.url, video.title)
-                                    video.push(video.title)
                                 });
                             })
                             .catch(err => console.log(err))
@@ -144,16 +144,60 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                     sp.getPlaylistTracks(id)
                         .then(data => {
 
-                            //data.body.items[0].name
-                            data.body.tracks.items.forEach(i => {
-                                let item = i.track
-                                let sName = `${item.name} ${item.artists[0].name}`
-                                youtube.searchVideos(sName, 1)
+                            let songs = []
+
+                            let i = 0;
+                            for (item of data.body.tracks.items) {
+                                if (!songs.push) return
+
+                                songs.push({
+                                    title: item.track.name,
+                                    artist: item.track.artists[0].name,
+                                    url: '',
+                                    id: i
+                                })
+
+                                i++
+                            }
+
+                            //console.log(songs)
+
+                            let j = 0;
+                            for (let i = 0; i < songs.length; i++) {
+
+                                youtube.searchVideos(`${songs[i].title} ${songs[i].artist}`, 1)
                                     .then(video => {
-                                        queue.addSong(video[0].url, video[0].title)
+                                        songs[i].url = video[0].url
+                                        /** 
+                                        Apenas passe as musicas para a queue quando recebermos a ultima url requisitada j e utilizado 
+                                        para manter conta de quantas urls ja foram recebidas, quando j == quantidade de musicas,
+                                        nos podemos passar as musicas para a queue.
+                                         */
+                                        if (j === songs.length - 1) {
+                                            songs.forEach(song => queue.addSong(song.url, song.title))
+                                        }
+
+                                        j++
                                     })
-                                    .catch(err => console.error(err))
-                            })
+                                    .catch(err => console.log(err))
+                            }
+
+                            // function queueVideos() {
+                            //     let song = songs[0]
+
+                            //     youtube.searchVideos(`${song.title} ${song.artist}`, 1)
+                            //         .then(video => {
+
+                            //             queue.addSong(video[0].url, video[0].title)
+
+                            //             songs.shift()
+
+                            //             if (songs.length > 0) queueVideos();
+                            //         })
+                            //         .catch(err => console.log(`Error on getAlbumTracks:\n${err}`))
+                            // }
+
+                            // queueVideos()
                         })
                         .catch(err => console.error(err))
                 }

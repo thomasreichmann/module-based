@@ -14,12 +14,12 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
 
     message.channel.send({
             "embed": {
-                "color": 1072183,
+                "color": 7536755,
                 "fields": [{
                     "name": ":musical_note: Queue",
                     "value": response
                 }]
             }
         })
-        .catch(err => console.log(`Error on RE Send:\n${err}`))
+        .catch(err => console.log(`Queue error on Rich Embed send:\n${err}`))
 }

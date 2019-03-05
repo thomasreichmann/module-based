@@ -15,6 +15,8 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
 
     function join() {
         channel.join()
+
+        channel.join()
         .then(() => {
             channel.leave()
             if(i > args[0]) return console.log(`Fim do spam`)

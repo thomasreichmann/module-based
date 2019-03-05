@@ -2,9 +2,11 @@ const yt = require('ytdl-core')
 const Discord = require('discord.js')
 
 module.exports = class Queue {
-    constructor(client, guild, connection) {
+    constructor(client, guild, connection, channel) {
         this.guild = guild
         this.connection = connection
+        /**@type {Discord.TextChannel} */
+        this.channel = channel
         /**@type {Discord.Client} */
         this.client = client
 
@@ -61,6 +63,15 @@ module.exports = class Queue {
                 }
 
                 console.log(`Proxima musica "${this.songs[0].name}" Guild "${this.guild.name}"`)
+                this.channel.send({
+                    "embed": {
+                        "color": 7536755,
+                        "fields": [{
+                            "name": "Tocando :musical_note:",
+                            "value": this.songs[0].name
+                        }]
+                    }
+                })
 
                 this.play()
             })
