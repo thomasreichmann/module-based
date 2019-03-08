@@ -11,6 +11,8 @@ module.exports = class Queue {
         this.client = client
 
         this.songs = []
+
+        /**@type {Discord.StreamDispatcher} */
         this.dispatcher;
 
         this.loop = false;
@@ -53,6 +55,8 @@ module.exports = class Queue {
                 }]
             }
         })
+
+        this.dispatcher.time
 
         this.dispatcher = this.connection.playStream(yt(this.songs[0].url, {
                 filter: 'audioonly'

@@ -8,21 +8,12 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
     let args = message.content.slice(prefix.length).trim().split(/ +/g);
     args.shift()
 
-    // let response = ""
-    // let i = 1
-    // for (song of queue.songs) {
-    //     response += `**${i}** - ${song.name}\n`
-    //     if (i >= 10) break;
-    //     i++
-    // }
-
     let s;
     let response = '';
 
     if (args[0]) {
         if (args[0] > 1) {
             s = (args[0] - 1) * 10
-            console.log(s)
         } else {
             s = 0
         }
@@ -30,7 +21,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
         s = 0
     }
 
-    if(s > queue.songs.length - 1) return message.reply(`Essa pagina nao existe na queue`)
+    if (s > queue.songs.length - 1) return message.reply(`Essa pagina nao existe na queue`)
 
     i = s;
 
@@ -38,8 +29,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
         let song = queue.songs[i]
 
         response += `**${i + 1}** - ${song.name}\n`
-        if (i >= s +9) break;
-        //console.log(i)
+        if (i >= s + 9) break;
         i++
     }
 
