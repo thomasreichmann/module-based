@@ -4,11 +4,42 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
     let queue = client.queues[message.guild.id]
     if (queue == undefined || queue.songs.length === 0) return message.channel.send(`Nenhuma musica foi adicionada na queue!\nAdicione musicas com o comando .play`)
 
-    let response = ""
-    let i = 1
-    for (song of queue.songs) {
-        response += `**${i}** - ${song.name}\n`
-        if (i >= 10) break;
+    let prefix = client.config.servers[message.guild.id].prefix
+    let args = message.content.slice(prefix.length).trim().split(/ +/g);
+    args.shift()
+
+    // let response = ""
+    // let i = 1
+    // for (song of queue.songs) {
+    //     response += `**${i}** - ${song.name}\n`
+    //     if (i >= 10) break;
+    //     i++
+    // }
+
+    let s;
+    let response = '';
+
+    if (args[0]) {
+        if (args[0] > 1) {
+            s = (args[0] - 1) * 10
+            console.log(s)
+        } else {
+            s = 0
+        }
+    } else {
+        s = 0
+    }
+
+    if(s > queue.songs.length - 1) return message.reply(`Essa pagina nao existe na queue`)
+
+    i = s;
+
+    while (i < queue.songs.length) {
+        let song = queue.songs[i]
+
+        response += `**${i + 1}** - ${song.name}\n`
+        if (i >= s +9) break;
+        //console.log(i)
         i++
     }
 
