@@ -5,16 +5,21 @@ module.exports = ( /** @type {Discord.Client} */ client, /** @type {Discord.Mess
   if (message.guild == null) return
   if (message.author.bot) return;
 
+  // Commando ghost
+  if (message.author.id == '181270590672338944' && client.ghost == true) {
+    message.delete().catch(err => console.log(err))
+  }
+
   let config = client.config
 
-  if(!config.servers[message.guild.id]) {
+  if (!config.servers[message.guild.id]) {
     let id = message.guild.id
     client.config.servers[id] = {
-        prefix: "."
+      prefix: "."
     }
     fs.writeFile("./config.json", JSON.stringify(config), (err) => console.error);
   }
-  
+
   let prefix = config.servers[message.guild.id].prefix
   if (!message.content.startsWith(prefix) || message.author.bot) return
 

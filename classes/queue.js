@@ -19,9 +19,9 @@ module.exports = class Queue {
 
     disconnect() {
         this.playing = false;
-        this.connection.disconnect();
         this.songs = undefined
         this.dispatcher = undefined
+        this.connection.disconnect();
         this.client.queues[this.guild.id] = undefined
     }
 
@@ -44,6 +44,16 @@ module.exports = class Queue {
 
         this.playing = true;
 
+        this.channel.send({
+            "embed": {
+                "color": 7536755,
+                "fields": [{
+                    "name": "Tocando :musical_note:",
+                    "value": this.songs[0].name
+                }]
+            }
+        })
+
         this.dispatcher = this.connection.playStream(yt(this.songs[0].url, {
                 filter: 'audioonly'
             }), {
@@ -63,15 +73,6 @@ module.exports = class Queue {
                 }
 
                 console.log(`Proxima musica "${this.songs[0].name}" Guild "${this.guild.name}"`)
-                this.channel.send({
-                    "embed": {
-                        "color": 7536755,
-                        "fields": [{
-                            "name": "Tocando :musical_note:",
-                            "value": this.songs[0].name
-                        }]
-                    }
-                })
 
                 this.play()
             })

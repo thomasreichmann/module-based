@@ -11,6 +11,8 @@ const Youtube = require('simple-youtube-api')
 
 require('./functions.js')
 
+client.ghost = false;
+
 const spotify_web_api = require('spotify-web-api-node')
 client.sp = new spotify_web_api({
     clientId: config.spotifyClientId,
