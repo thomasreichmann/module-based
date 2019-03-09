@@ -6,7 +6,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
     let args = message.content.slice(prefix.length).trim().split(/ +/g);
     args.shift()
 
-    if (client.queues[message.guild.id]) return message.reply(`Esse comando nao pode ser utilizado enquanto uma musica estiver tocando.`)
+    if (client.queues[message.guild.id]) return message.reply(`Esse comando nao pode ser utilizado enquanto uma musica estiver tocando.\nUse o comando "stop" para remover as musicas.`)
 
     let amt = args[0]
     if (amt == undefined || amt > 20) return null
