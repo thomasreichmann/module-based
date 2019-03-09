@@ -11,7 +11,6 @@ module.exports = class Queue {
         this.client = client
 
         this.songs = []
-
         /**@type {Discord.StreamDispatcher} */
         this.dispatcher;
 
@@ -56,7 +55,7 @@ module.exports = class Queue {
             }
         })
 
-        this.dispatcher.time
+        this.dispatcher.stream.readableLength
 
         this.dispatcher = this.connection.playStream(yt(this.songs[0].url, {
                 filter: 'audioonly'
@@ -80,5 +79,6 @@ module.exports = class Queue {
 
                 this.play()
             })
+            .on('error', (err) => console.log(`Erro no dispatcher:\n${err}`))
     }
 }

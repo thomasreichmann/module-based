@@ -29,5 +29,4 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
     let s = shuffle(queue.songs)
 
     queue.songs = s
-
 }

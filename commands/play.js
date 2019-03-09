@@ -182,10 +182,8 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 }
             } else {
                 // Nenhum servico indentificado, logo temos uma pesquisa
-
                 youtube.searchVideos(searchQuery, 1).then(search => {
                     let video = search[0]
-
                     queue.addSong(video.url, video.title)
 
                 })
