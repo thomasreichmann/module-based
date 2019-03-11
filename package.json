@@ -1,13 +1,13 @@
 {
-  "name": "DiscordBot",
+  "name": "FDBO",
   "version": "1.0.0",
-  "description": "",
+  "description": "A node.js based discord music bot.",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node main.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Thomas Reichmann",
   "license": "ISC",
   "dependencies": {
     "buffer": "^5.2.1",
