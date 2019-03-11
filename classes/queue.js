@@ -15,6 +15,7 @@ module.exports = class Queue {
         this.dispatcher;
 
         this.loop = false;
+        this.qloop = false;
         this.playing = false;
     }
 
@@ -63,7 +64,10 @@ module.exports = class Queue {
             .on('end', () => {
                 if (!this.songs) return this.disconnect()
 
-                if (this.loop == false) {
+                if (this.qloop && !this.loop) {
+                    let s = this.songs.shift()
+                    this.addSong(s.url, s.name)
+                } else if (!this.loop) {
                     console.log(`Musica ${this.songs[0].name} foi removida da queue Guild ${this.guild.name}`)
                     this.songs.shift()
                 }
