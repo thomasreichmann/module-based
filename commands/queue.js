@@ -37,7 +37,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
             "embed": {
                 "color": 7536755,
                 "fields": [{
-                    "name": ":musical_note: Queue",
+                    "name": "Queue :musical_note:",
                     "value": response
                 }]
             }
