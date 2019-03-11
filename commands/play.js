@@ -148,7 +148,9 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
 
                             let songs = []
 
-                            for (item of data.body.items) {
+                            let items = data.body.items != undefined ? data.body.items : data.body.tracks.items
+
+                            for (item of items) {
                                 if (!songs.push) return
 
                                 songs.push({
