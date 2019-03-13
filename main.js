@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const Enmap = require('enmap')
 const dot = require('dotenv')
-//dot.config()
+dot.config()
 
 const fs = require('fs');
 const rp = require('xmlhttprequest');
