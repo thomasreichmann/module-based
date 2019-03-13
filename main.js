@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const Enmap = require('enmap')
+const dot = require('dotenv')
+dot.config()
 
 const fs = require('fs');
 const rp = require('xmlhttprequest');
@@ -15,11 +17,11 @@ client.ghost = false;
 
 const spotify_web_api = require('spotify-web-api-node')
 client.sp = new spotify_web_api({
-    clientId: config.spotifyClientId,
-    clientSecret: config.spotifyClientSecret
+    clientId: process.env.spotifyClientId,
+    clientSecret: process.env.spotifyClientSecret
 })
 
-client.youtube = new Youtube(config.youtubeApiKey);
+client.youtube = new Youtube(process.env.youtubeApiKey);
 client.config = config
 client.commands = new Enmap();
 client.queues = {}
@@ -40,8 +42,8 @@ function getSpToken() {
     }
     req.handleError = (err) => console.log(`Spotify token request internal error: \n${err}`)
 
-    let id = config.spotifyClientId
-    let secret = config.spotifyClientSecret
+    let id = process.env.spotifyClientId
+    let secret = process.env.spotifyClientSecret
     let url = `https://accounts.spotify.com/api/token`
     let body = `grant_type=client_credentials`
 
@@ -86,4 +88,4 @@ client.on("error", (e) => console.error(e)); // Para o bot nao crashar / crashar
 client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
 
-client.login(config.token);
+client.login(process.env.token);
