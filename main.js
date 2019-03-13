@@ -2,7 +2,10 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const Enmap = require('enmap')
 
-if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+if (process.env.NODE_ENV != 'production') {
+    require('dotenv').config();
+    console.log(`Dev mode`)
+}
 
 const fs = require('fs');
 const rp = require('xmlhttprequest');
