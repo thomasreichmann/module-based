@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const Enmap = require('enmap')
-const dot = require('dotenv')
-dot.config()
+
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 const fs = require('fs');
 const rp = require('xmlhttprequest');
@@ -10,7 +10,6 @@ const rp = require('xmlhttprequest');
 const config = require('./config.json');
 
 const Youtube = require('simple-youtube-api')
-
 require('./functions.js')
 
 client.ghost = false;

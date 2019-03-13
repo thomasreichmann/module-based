@@ -1,5 +1,5 @@
 {
-  "name": "FDBO",
+  "name": "fdbo",
   "version": "1.0.0",
   "description": "A node.js based discord music bot.",
   "main": "main.js",
@@ -8,7 +8,7 @@
     "url": "https://github.com/thomasreichmann/module-based"
   },
   "scripts": {
-    "start": "node main.js"
+    "start": "NODE_ENV='production' node ./main.js"
   },
   "keywords": [],
   "author": "Thomas Reichmann",
@@ -17,7 +17,7 @@
     "buffer": "^5.2.1",
     "bufferutil": "^3.0.5",
     "discord.js": "^11.4.2",
-    "dotenv": "^6.2.0",
+
     "enmap": "^4.7.1",
     "erlpack": "github:discordapp/erlpack",
     "ffmpeg": "0.0.4",
@@ -31,5 +31,8 @@
     "uws": "^99.0.0",
     "xmlhttprequest": "^1.8.0",
     "ytdl-core": "^0.24.0"
+  },
+  "devDependencies": {
+    "dotenv": "^6.2.0"
   }
 }

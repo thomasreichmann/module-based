@@ -2,3 +2,4 @@ node_modules
 .vscode
 dump.json
 .env
+start.sh
