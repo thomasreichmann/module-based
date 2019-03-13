@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A node.js based discord music bot.",
   "main": "main.js",
+  "engines": {
+    "node": "8.11",
+    "npm": "6.5"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/thomasreichmann/module-based"
