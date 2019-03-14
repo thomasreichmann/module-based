@@ -1,15 +1,11 @@
 const Discord = require('discord.js')
 const Queue = require('../classes/queue.js')
 
-exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message) => {
+exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message, args) => {
 
     const youtube = client.youtube
     const sp = client.sp
-
-    let prefix = client.config.servers[message.guild.id].prefix
-
-    let args = message.content.slice(prefix.length).trim().split(/ +/g);
-    args.shift()
+    
     const guild = message.guild
     let queues = client.queues
 

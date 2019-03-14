@@ -1,10 +1,7 @@
 const Discord = require('discord.js')
 
-exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message) => {
-    let channel = message.member.voiceChannel
-    let prefix = client.config.servers[message.guild.id].prefix
-    let args = message.content.slice(prefix.length).trim().split(/ +/g);
-    args.shift()
+exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message, args) => {
+    let channel = message.member.voiceChannel 
 
     if (client.queues[message.guild.id]) return message.reply(`Esse comando nao pode ser utilizado enquanto uma musica estiver tocando.\nUse o comando "stop" para remover as musicas.`)
 

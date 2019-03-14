@@ -21,7 +21,7 @@ function shuffle(array) {
     return array;
 }
 
-exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message) => {
+exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message, args) => {
     let /**@type {Queue} */ queue = client.queues[message.guild.id]
 
     if (queue === undefined) return message.reply(`Nenhuma musica esta sendo tocada`)

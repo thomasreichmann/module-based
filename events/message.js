@@ -10,17 +10,7 @@ module.exports = ( /** @type {Discord.Client} */ client, /** @type {Discord.Mess
     message.delete().catch(err => console.log(err))
   }
 
-  let config = client.config
-
-  if (!config.servers[message.guild.id]) {
-    let id = message.guild.id
-    client.config.servers[id] = {
-      prefix: "."
-    }
-    fs.writeFile("./config.json", JSON.stringify(config), (err) => console.error);
-  }
-
-  let prefix = config.servers[message.guild.id].prefix
+  let prefix = ','
   if (!message.content.startsWith(prefix) || message.author.bot) return
 
   const args = message.content.slice(prefix.length).trim().split(/ +/g);

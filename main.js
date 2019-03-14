@@ -2,6 +2,12 @@ if (process.env.NODE_ENV != 'production') {
     require('dotenv').config();
     console.log(`Dev mode`)
 }
+const connection = require('mysql').createConnection({
+    host: process.env.MYSQL_HOST,
+    user: 'root',
+    password: process.env.MYSQL_PASS,
+    database: 'fdbo_music'
+}).connect()
 
 const Discord = require('discord.js');
 const client = new Discord.Client();

@@ -1,12 +1,8 @@
 const Discord = require('discord.js')
 
-exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message) => {
+exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message, args) => {
     let queue = client.queues[message.guild.id]
     if (queue == undefined || queue.songs.length === 0) return message.channel.send(`Nenhuma musica foi adicionada na queue!\nAdicione musicas com o comando .play`)
-
-    let prefix = client.config.servers[message.guild.id].prefix
-    let args = message.content.slice(prefix.length).trim().split(/ +/g);
-    args.shift()
 
     let s;
     let response = '';
