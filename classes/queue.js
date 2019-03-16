@@ -56,7 +56,7 @@ module.exports = class Queue {
             }
         })
 
-        this.dispatcher = this.connection.playStream(yt(this.songs[0].url, {
+        this.dispatcher = this.connection.playStream(yt(`${this.songs[0].url} music`, {
                 filter: 'audioonly'
             }), {
                 bitrate: 'auto'
@@ -81,5 +81,6 @@ module.exports = class Queue {
 
                 this.play()
             })
+            .on('error', (err) => console.log(err))
     }
 }
