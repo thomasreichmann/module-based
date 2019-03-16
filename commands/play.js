@@ -92,7 +92,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                     console.log(`Found track`)
                     sp.getTrack(id)
                         .then(data => {
-                            let sName = data.body.name
+                            let sName = `${data.body.name} ${data.body.artists[0]} music`
                             youtube.searchVideos(sName, 1)
                                 .then(video => {
                                     queue.addSong(video[0].url, sName)
@@ -120,7 +120,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                             let j = 0;
                             for (let i = 0; i < songs.length; i++) {
 
-                                youtube.searchVideos(`${songs[i].title} ${songs[i].artist}`, 1)
+                                youtube.searchVideos(`${songs[i].title} ${songs[i].artist} music`, 1)
                                     .then(video => {
                                         songs[i].url = video[0].url
                                         /** 
@@ -159,7 +159,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                             let j = 0;
                             for (let i = 0; i < songs.length; i++) {
 
-                                youtube.searchVideos(`${songs[i].title} ${songs[i].artist}`, 1)
+                                youtube.searchVideos(`${songs[i].title} ${songs[i].artist} music`, 1)
                                     .then(video => {
                                         songs[i].url = video[0].url
                                         /** 
@@ -180,7 +180,8 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 }
             } else {
                 // Nenhum servico indentificado, logo temos uma pesquisa
-                youtube.searchVideos(searchQuery, 1).then(search => {
+                youtube.searchVideos(`${searchQuery} music`, 1)
+                .then(search => {
                     let video = search[0]
                     queue.addSong(video.url, video.title)
 
