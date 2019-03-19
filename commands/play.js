@@ -5,7 +5,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
 
     const youtube = client.youtube
     const sp = client.sp
-    
+
     const guild = message.guild
     let queues = client.queues
 
@@ -89,14 +89,14 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 let id = parsed[1]
 
                 if (type == "track") {
-                    console.log(`Found track`)
                     sp.getTrack(id)
                         .then(data => {
-                            let sName = `${data.body.name} ${data.body.artists[0]} music`
-                            youtube.searchVideos(sName, 1)
-                                .then(video => {
-                                    queue.addSong(video[0].url, sName)
+                            youtube.searchVideos(`${data.body.artists[0].name} ${data.body.name}`, 1, {
+                                    videoCategoryId: 10
                                 })
+                                .then(videos => videos.forEach(video => {
+                                    queue.addSong(video.url, `${data.body.artists[0].name} - ${data.body.name}`)
+                                }))
                                 .catch(err => console.error(err))
                         })
                         .catch(err => console.error(err))
@@ -107,7 +107,9 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                         .then(data => {
                             let songs = []
 
-                            for (item of data.body.items) {
+                            let items = data.body.items != undefined ? data.body.items : data.body.tracks.items
+
+                            for (item of items) {
                                 if (!songs.push) return
 
                                 songs.push({
@@ -120,7 +122,9 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                             let j = 0;
                             for (let i = 0; i < songs.length; i++) {
 
-                                youtube.searchVideos(`${songs[i].title} ${songs[i].artist} music`, 1)
+                                youtube.searchVideos(`${songs[i].artist} ${songs[i].title}`, 1, {
+                                        videoCategoryId: 10
+                                    })
                                     .then(video => {
                                         songs[i].url = video[0].url
                                         /** 
@@ -129,7 +133,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                         nos podemos passar as musicas para a queue.
                                         */
                                         if (j === songs.length - 1) {
-                                            songs.forEach(song => queue.addSong(song.url, song.title))
+                                            songs.forEach(song => queue.addSong(song.url, `${song.artist} - ${song.title}`))
                                         }
 
                                         j++
@@ -159,7 +163,9 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                             let j = 0;
                             for (let i = 0; i < songs.length; i++) {
 
-                                youtube.searchVideos(`${songs[i].title} ${songs[i].artist} music`, 1)
+                                youtube.searchVideos(`${songs[i].artist} ${songs[i].title}`, 1, {
+                                        videoCategoryId: 10
+                                    })
                                     .then(video => {
                                         songs[i].url = video[0].url
                                         /** 
@@ -168,7 +174,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                         nos podemos passar as musicas para a queue.
                                         */
                                         if (j === songs.length - 1) {
-                                            songs.forEach(song => queue.addSong(song.url, song.title))
+                                            songs.forEach(song => queue.addSong(song.url, `${song.artist} - ${song.title}`))
                                         }
 
                                         j++
@@ -180,12 +186,13 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 }
             } else {
                 // Nenhum servico indentificado, logo temos uma pesquisa
-                youtube.searchVideos(`${searchQuery} music`, 1)
-                .then(search => {
-                    let video = search[0]
-                    queue.addSong(video.url, video.title)
-
-                })
+                youtube.searchVideos(`${searchQuery}`, 1)
+                    .then(search => {
+                        let video = search[0]
+                        if (!video) return message.reply(`Nenhum video foi encontrado com esse nome`)
+                        queue.addSong(video.url, video.title)
+                    })
+                    .catch(err => console.log(err))
             }
         })
         .catch(err => console.log(err))
