@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Discord = require('discord.js')
 
-exports.run = (/** @type {Discord.Client} */ client, /** @type {Discord.Message} */) => {
+exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message, /**@type {Array} */ args) => {
     fs.readdir("./commands/", (err, files) => {
         if (err) return console.error(err);
         let i = 0;

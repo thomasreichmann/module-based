@@ -2,21 +2,30 @@ if (process.env.NODE_ENV != 'production') {
     require('dotenv').config();
     console.log(`Dev mode`)
 }
-const connection = require('mysql').createConnection({
-    host: process.env.MYSQL_HOST,
-    user: 'root',
-    password: process.env.MYSQL_PASS,
-    database: 'fdbo_music'
-}).connect()
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const Enmap = require('enmap')
 
+let connection = require('mysql').createConnection({
+    host: process.env.MYSQL_HOST,
+    user: 'root',
+    password: process.env.MYSQL_PASS,
+    database: process.env.MYSQL_DATABASE
+})
+
+function setMysqlConnection() {
+    connection.connect(err => {
+        if (err) throw err;
+        client.connection = connection
+    })
+}
+
+setMysqlConnection()
+setTimeout(setMysqlConnection, 28700000);
+
 const fs = require('fs');
 const rp = require('xmlhttprequest');
-
-const config = require('./config.json');
 
 const Youtube = require('simple-youtube-api')
 require('./functions.js')
@@ -29,8 +38,18 @@ client.sp = new spotify_web_api({
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET
 })
 
+let config = new Enmap()
+
+let q = 'SELECT * FROM servers'
+connection.query(q, (error, results) => {
+    if (error) throw error
+    results.forEach(server => {
+        config.set(server.id, server)
+    })
+    client.config = config
+})
+
 client.youtube = new Youtube(process.env.YOUTUBE_API_KEY);
-client.config = config
 client.commands = new Enmap();
 client.queues = {}
 

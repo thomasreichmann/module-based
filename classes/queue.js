@@ -46,17 +46,7 @@ module.exports = class Queue {
 
         this.playing = true;
 
-        this.channel.send({
-            "embed": {
-                "color": 7536755,
-                "fields": [{
-                    "name": "Tocando :musical_note:",
-                    "value": this.songs[0].name
-                }]
-            }
-        })
-
-        this.dispatcher = this.connection.playStream(yt(`${this.songs[0].url} music`, {
+        this.dispatcher = this.connection.playStream(yt(this.songs[0].url, {
                 filter: 'audioonly'
             }), {
                 bitrate: 'auto'

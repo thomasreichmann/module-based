@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const fs = require('fs')
+const mysql = require('mysql')
 
 module.exports = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message) => {
   if (message.guild == null) return
@@ -10,18 +11,30 @@ module.exports = ( /** @type {Discord.Client} */ client, /** @type {Discord.Mess
     message.delete().catch(err => console.log(err))
   }
 
-  let prefix = ','
+  let serverConfig = client.config.get(message.guild.id);
+
+  // Prefix pode ser = . desde o comeco ja que no final da query esse sera o prefixo adicionado a database e a config.
+  let prefix = '.';
+  if (!serverConfig) {
+    // Definicao da query
+    let q = `INSERT INTO servers VALUES ('${message.guild.id}', '${prefix}');`
+    client.connection.query(q, (error, results) => {
+      if (error) throw error
+      console.log(`Nova guild adicionada a database: '${message.guild.name}';'${message.guild.id}'`)
+      // Adiciona a guild ao Enmap de configs
+      client.config.set(message.guild.id, prefix)
+    })
+  } else {
+    prefix = serverConfig.prefix
+  }
+
   if (!message.content.startsWith(prefix) || message.author.bot) return
 
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
-  // Grab the command data from the client.commands Enmap
   const cmd = client.commands.get(command);
 
-  // If that command doesn't exist, silently exit and do nothing
   if (!cmd) return;
-
-  // Run the command
   cmd.run(client, message, args);
 };
