@@ -16,7 +16,7 @@ let connection = require('mysql').createConnection({
 
 function setMysqlConnection() {
     connection.connect(err => {
-        if (err) throw err;
+        if (err) console.log(err);
         client.connection = connection
     })
 }
