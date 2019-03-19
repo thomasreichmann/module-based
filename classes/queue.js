@@ -67,6 +67,16 @@ module.exports = class Queue {
                     return console.log(`Saindo do canal de voz Guild ${this.guild.name}`)
                 }
 
+                this.channel.send({
+                    "embed": {
+                        "color": 7536755,
+                        "fields": [{
+                            "name": "Tocando :musical_note:",
+                            "value": this.songs[0].name
+                        }]
+                    }
+                })
+
                 console.log(`Proxima musica "${this.songs[0].name}" Guild "${this.guild.name}"`)
 
                 this.play()
