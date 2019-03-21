@@ -37,24 +37,28 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                 // Indentificamos uma playlist, lidar com ela
 
                                 console.log(`Uma playlist foi adicionada ${playlist.title}\n`)
+                                let songs = []
 
                                 videos.forEach(video => {
-                                    queue.addSong(video.url, video.title)
+                                    songs.push({
+                                        "name": video.title,
+                                        "url": video.url
+                                    })
                                 });
+
+                                queue.addSong(songs)
                             })
                             .catch(err => console.log(err))
                     })
                     .catch(() => {
-                        // Nao temos uma playlist, logo ver se e um link para um unico video
+                        // Nao temos uma playlist, logo ver se temos um link para um unico video
                         youtube.getVideo(args[0])
                             .then(video => {
                                 // O arg era um link, logo podemos adcionar o video a queue
-
-                                if (queue.songs.length == 0) {
-                                    queue.addSong(video.url, video.title)
-                                } else {
-                                    queue.addSong(video.url, video.title)
-                                }
+                                queue.addSong([{
+                                    "name": video.title,
+                                    "url": video.url
+                                }])
                             })
                             .catch((err) => {
                                 if (err) return console.log(`Erro ao pegar um video por link em play.js\n${err}`)
@@ -63,14 +67,10 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                     .then(search => {
                                         let video = search[0]
 
-                                        if (queue.songs.length == 0) {
-                                            console.log(`\nQueue foi iniciada com a musica ${video.title} Por pesquisa`)
-                                            queue.addSong(video.url, video.title)
-                                        } else {
-                                            console.log(`\nA musica ${video.title} foi adicionada na queue`)
-                                            queue.addSong(video.url, video.title)
-                                        }
-
+                                        queue.addSong([{
+                                            "name": video.title,
+                                            "url": video.url
+                                        }])
                                     })
                                     .catch(err => console.log(`Erro em search term em play.js\n${err}`))
 
@@ -95,7 +95,10 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                     videoCategoryId: 10
                                 })
                                 .then(videos => videos.forEach(video => {
-                                    queue.addSong(video.url, `${data.body.artists[0].name} - ${data.body.name}`)
+                                    queue.addSong([{
+                                        "name": `${data.body.artists[0].name} - ${data.body.name}`,
+                                        "url": video.url
+                                    }])
                                 }))
                                 .catch(err => console.error(err))
                         })
@@ -113,7 +116,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                 if (!songs.push) return
 
                                 songs.push({
-                                    title: item.name,
+                                    name: item.name,
                                     artist: item.artists[0].name,
                                     url: ''
                                 })
@@ -133,7 +136,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                         nos podemos passar as musicas para a queue.
                                         */
                                         if (j === songs.length - 1) {
-                                            songs.forEach(song => queue.addSong(song.url, `${song.artist} - ${song.title}`))
+                                            queue.addSong(songs)
                                         }
 
                                         j++
@@ -154,7 +157,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                 if (!songs.push) return
 
                                 songs.push({
-                                    title: item.track.name,
+                                    name: item.track.name,
                                     artist: item.track.artists[0].name,
                                     url: ''
                                 })
@@ -174,7 +177,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                         nos podemos passar as musicas para a queue.
                                         */
                                         if (j === songs.length - 1) {
-                                            songs.forEach(song => queue.addSong(song.url, `${song.artist} - ${song.title}`))
+                                            queue.addSong(songs)
                                         }
 
                                         j++
@@ -190,7 +193,10 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                     .then(search => {
                         let video = search[0]
                         if (!video) return message.reply(`Nenhum video foi encontrado com esse nome`)
-                        queue.addSong(video.url, video.title)
+                        queue.addSong([{
+                            "name": video.title,
+                            "url": video.url
+                        }])
                     })
                     .catch(err => console.log(err))
             }

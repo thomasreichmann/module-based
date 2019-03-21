@@ -27,15 +27,35 @@ module.exports = class Queue {
         this.client.queues[this.guild.id] = undefined
     }
 
-    addSong(url, name) {
-        let song = {
-            url: url,
-            name: name
+    addSong(s) {
+        s.forEach(song => {
+            this.songs.push(song)
+        });
+
+        if (s.length > 1) {
+            console.log(`${s.length} Musicas adicionadas a queue da guild "${this.channel.guild.name}"`)
+            this.channel.send({
+                "embed": {
+                    "color": 7536755,
+                    "fields": [{
+                        "name": `Playlist adicionada :musical_note:`,
+                        "value": `**${s.length}** Musicas`
+                    }]
+                }
+            })
+        } else {
+            console.log(`A musica "${s[0].name}" foi adicionada a guild "${this.channel.guild.name}"`)
+
+            this.channel.send({
+                "embed": {
+                    "color": 7536755,
+                    "fields": [{
+                        "name": "Musica adicionada :musical_note:",
+                        "value": s[0].name
+                    }]
+                }
+            })
         }
-
-        this.songs.push(song)
-
-        console.log(`A musica "${name}" foi adicionada na queue Guild "${this.guild.name}"`)
 
         if (!this.playing) this.play()
     }
@@ -66,16 +86,6 @@ module.exports = class Queue {
                     this.disconnect()
                     return console.log(`Saindo do canal de voz Guild ${this.guild.name}`)
                 }
-
-                this.channel.send({
-                    "embed": {
-                        "color": 7536755,
-                        "fields": [{
-                            "name": "Tocando :musical_note:",
-                            "value": this.songs[0].name
-                        }]
-                    }
-                })
 
                 console.log(`Proxima musica "${this.songs[0].name}" Guild "${this.guild.name}"`)
 
