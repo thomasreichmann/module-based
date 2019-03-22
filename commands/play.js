@@ -91,9 +91,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 if (type == "track") {
                     sp.getTrack(id)
                         .then(data => {
-                            youtube.searchVideos(`${data.body.artists[0].name} ${data.body.name}`, 1, {
-                                    videoCategoryId: 10
-                                })
+                            youtube.searchVideos(`${data.body.artists[0].name} ${data.body.name}`, 1)
                                 .then(videos => videos.forEach(video => {
                                     queue.addSong([{
                                         "name": `${data.body.artists[0].name} - ${data.body.name}`,
@@ -125,9 +123,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                             let j = 0;
                             for (let i = 0; i < songs.length; i++) {
 
-                                youtube.searchVideos(`${songs[i].artist} ${songs[i].title}`, 1, {
-                                        videoCategoryId: 10
-                                    })
+                                youtube.searchVideos(`${songs[i].artist} ${songs[i].title}`, 1)
                                     .then(video => {
                                         songs[i].url = video[0].url
                                         /** 
@@ -166,9 +162,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                             let j = 0;
                             for (let i = 0; i < songs.length; i++) {
 
-                                youtube.searchVideos(`${songs[i].artist} ${songs[i].title}`, 1, {
-                                        videoCategoryId: 10
-                                    })
+                                youtube.searchVideos(`${songs[i].artist} ${songs[i].title}`, 1,)
                                     .then(video => {
                                         songs[i].url = video[0].url
                                         /** 
