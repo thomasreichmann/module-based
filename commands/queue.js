@@ -24,7 +24,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
     while (i < queue.songs.length) {
         let song = queue.songs[i]
 
-        response += `**${i + 1}** - ${song.name}\n`
+        response += `**${i + 1} -** ${song.artist} - ${song.name}\n`
         if (i >= s + 9) break;
         i++
     }
