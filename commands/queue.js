@@ -4,18 +4,8 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
     let queue = client.queues[message.guild.id]
     if (queue == undefined || queue.songs.length === 0) return message.channel.send(`Nenhuma musica foi adicionada na queue!\nAdicione musicas com o comando .play`)
 
-    let s;
+    let s = args[0] > 1 ? (args[0] - 1) * 10 : 0
     let response = '';
-
-    if (args[0]) {
-        if (args[0] > 1) {
-            s = (args[0] - 1) * 10
-        } else {
-            s = 0
-        }
-    } else {
-        s = 0
-    }
 
     if (s > queue.songs.length - 1) return message.reply(`Essa pagina nao existe na queue`)
 
@@ -24,7 +14,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
     while (i < queue.songs.length) {
         let song = queue.songs[i]
 
-        response += `**${i + 1} -** ${song.artist} - ${song.name}\n`
+        response += `**${i + 1} -** ${song.name}\n`
         if (i >= s + 9) break;
         i++
     }
