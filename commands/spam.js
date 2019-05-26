@@ -5,13 +5,10 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
 
     if (client.queues[message.guild.id]) return message.reply(`Esse comando nao pode ser utilizado enquanto uma musica estiver tocando.\nUse o comando "stop" para remover as musicas.`)
 
-    let amt = args[0]
-    if (amt == undefined || amt > 20) return null
+    let amt = parseInt(args[0])
+    if (amt == NaN || amt > 20) return console.log(`Spam fail`)
     if (!channel) return message.reply(`Voce nao esta em um canal de voz`)
-
-    let i = 0
-    join()
-
+    
     function join() {
         channel.join()
             .then(() => {
@@ -21,4 +18,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 join()
             })
     }
+
+    let i = 0
+    join()
 }
