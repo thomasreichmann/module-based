@@ -7,22 +7,33 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const Enmap = require('enmap')
 
-let connection = require('mysql').createConnection({
+const mysql = require('mysql')
+let connection = mysql.createConnection({
     host: process.env.MYSQL_HOST,
-    user: 'root',
+    user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASS,
     database: process.env.MYSQL_DATABASE
 })
 
-function setMysqlConnection() {
-    connection.connect(err => {
-        if (err) console.log(err);
-        client.connection = connection
-    })
-}
+// function setMysqlConnection() {
+//     connection.end(err => {
+//         if (err) console.log(err)
+//         connection.connect(err => {
+//             if (err) console.log(err);
+//             client.connection = connection
+//         })
+//     })
+// }
 
-setMysqlConnection()
-setTimeout(setMysqlConnection, 28700000);
+connection.on('error', (err) => {
+    console.log(`Erro MySQL fora de uma query:\n${err.code}\n${err.message}`)
+})
+
+setInterval(() => {
+connection.query(`SELECT 1`);
+}, 5000)
+// setMysqlConnection()
+// setTimeout(setMysqlConnection, 28700000);
 
 const fs = require('fs');
 const rp = require('xmlhttprequest');
@@ -42,7 +53,7 @@ let config = new Enmap()
 
 let q = 'SELECT * FROM servers'
 connection.query(q, (error, results) => {
-    if (error) throw error
+    if (error) console.log(error)
     results.forEach(server => {
         config.set(server.id, server)
     })
