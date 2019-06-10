@@ -28,9 +28,21 @@ module.exports = class Queue {
     }
 
     addSong(s) {
-        s.forEach(song => {
+        // Caso a musica do spotify nao for encontrada a url sera = null, logo pulamos a musica (mesmo que skip.js)
+        let added = 0;
+        for (let i = 0; i < s.length; i++) {
+            const song = s[i];
+
+            if (song == null || song.url == null) continue;
             this.songs.push(song)
-        });
+            added++
+        }
+
+        // s.forEach(song => {
+        //     this.songs.push(song)
+        // });
+
+        if (s.length < 1) throw "Erro na adicao de musicas, queue.js (classe):\ns.length < 1"
 
         if (s.length > 1) {
             console.log(`${s.length} Musicas adicionadas a queue da guild "${this.channel.guild.name}"`)
@@ -39,7 +51,7 @@ module.exports = class Queue {
                     "color": 7536755,
                     "fields": [{
                         "name": `Playlist adicionada :musical_note:`,
-                        "value": `**${s.length}** Musicas`
+                        "value": `**${added}** Musicas`
                     }]
                 }
             })
@@ -51,7 +63,7 @@ module.exports = class Queue {
                     "color": 7536755,
                     "fields": [{
                         "name": "Musica adicionada :musical_note:",
-                        "value": s[0].name
+                        "value": s[0].name.replace('official video', ' ')
                     }]
                 }
             })
@@ -61,10 +73,17 @@ module.exports = class Queue {
     }
 
     play() {
-
         if (this.songs.length == 0) this.disconnect()
 
+        // Caso a primeira musica nao tenha url, sabemos que ela nao foi encontrada pelo spotify.
+        if (!this.songs[0].url) {
+            // Resolver a falta de url, por enquanto apenas pulamos a musica, mas seria bom dar um aviso ao usuario.
+            this.songs.shift()
+        }
+
         this.playing = true;
+
+        //console.log(`DEBUG: next: ${this.songs[0].name} || ${this.songs[0].url}`)
 
         this.dispatcher = this.connection.playStream(yt(this.songs[0].url, {
                 filter: 'audioonly'
