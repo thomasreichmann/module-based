@@ -1,5 +1,7 @@
 const Discord = require('discord.js')
 const Queue = require('../classes/queue.js')
+// HTML decoder (strings com &quot; e &#39;, Google API retorna nomes com esse encoding)
+const he = require('he')
 
 exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message} */ message, args) => {
 
@@ -27,6 +29,15 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
             let searchQuery = args.join(" ")
 
             let service = args[0].replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split(".")[0].toLowerCase()
+
+            let ytOptions = {
+                part: 'snippet',
+                videoEmbeddable: 'true',
+                type: 'video',
+                safeSearch: 'none',
+                videoCategoryId: 10
+            }
+            let sufix = `official video`
 
             // Check se o link vem do youtube
             if (service == "youtube" || service == "youtu") {
@@ -91,16 +102,36 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 if (type == "track") {
                     sp.getTrack(id)
                         .then(data => {
-                            youtube.searchVideos(`${data.body.artists[0].name} ${data.body.name}`, 1, {
-                                videoCategoryId: 10
-                            })
+                            let title = `${data.body.name} - ${data.body.artists[0].name}`
+
+                            youtube.searchVideos(`${title} ${sufix}`, 1, ytOptions)
                                 .then(videos => videos.forEach(video => {
+
+                                    // Talvez seja bom mudar essa regex para a primeira palavra do nome da musica.
+                                    let r = new RegExp(title.split(`-`)[0].trim(), 'i')
+                                    if (he.decode(video.title).trim().search(r) == -1) {
+                                        message.channel.send({
+                                            "embed": {
+                                                "color": 7536755,
+                                                "fields": [{
+                                                    "name": `Musica nao encontrada`,
+                                                    "value": `A musica **'${title}'** nao foi encontrada no youtube`
+                                                }]
+                                            }
+                                        })
+                                        .catch(err => console.log(err))
+
+                                        if (queue.songs.length < 1) connection.disconnect();
+                                        return;
+                                    }
+
                                     queue.addSong([{
-                                        "name": `${data.body.artists[0].name} - ${data.body.name}`,
+                                        "name": `${title}`,
                                         "url": video.url
                                     }])
+
+                                    console.log(video.url)
                                 }))
-                                .catch(err => console.error(err))
                         })
                         .catch(err => console.error(err))
 
@@ -116,32 +147,48 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                 if (!songs.push) return
 
                                 songs.push({
-                                    name: item.name,
-                                    artist: item.artists[0].name,
-                                    url: ''
+                                    name: `${item.name} - ${item.artists[0].name}`,
+                                    url: null
                                 })
                             }
 
-                            let j = 0;
-                            for (let i = 0; i < songs.length; i++) {
+                            // Array temporario das musicas
+                            let tempS = songs
 
-                                youtube.searchVideos(`${songs[i].artist} ${songs[i].title}`, 1, {
-                                    videoCategoryId: 10
-                                })
+                            let length = songs.length
+                            let j = 0;
+                            for (let i = 0; i < length; i++) {
+
+                                let sq = `${songs[i].name} ${sufix}`
+                                youtube.searchVideos(sq, 1, ytOptions)
                                     .then(video => {
-                                        songs[i].url = video[0].url
+                                        if (!tempS[i] || !video[0]) return console.log(`ERROR on the start`)
+
+                                        // Talvez seja bom mudar essa regex para a primeira palavra do nome da musica.
+                                        let r = new RegExp(tempS[i].name.split(`-`)[0].trim(), 'i')
+                                        if (he.decode(video[0].title).trim().search(r) == -1) {
+                                            console.log(tempS[i].name.split(`-`)[0] + ` || ${he.decode(video[0].title)}`)
+                                        } else {
+                                            songs[i].url = video[0].url
+                                            console.log(video[0].url)
+                                        }
+
                                         /** 
                                         Apenas passe as musicas para a queue quando recebermos a ultima url requisitada j e utilizado 
                                         para manter conta de quantas urls ja foram recebidas, quando j == quantidade de musicas,
                                         nos podemos passar as musicas para a queue.
                                         */
-                                        if (j === songs.length - 1) {
+                                        //console.log(`${j} - ${length - 1}`)
+                                        if (j >= length - 1) {
+                                            console.log(`finished`)
                                             queue.addSong(songs)
                                         }
 
                                         j++
                                     })
-                                    .catch(err => console.log(err))
+                                    .catch((err) => {
+                                        console.log(err)
+                                    })
                             }
                         })
                         .catch(err => console.error(err))
@@ -157,33 +204,47 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                 if (!songs.push) return
 
                                 songs.push({
-                                    name: item.track.name,
-                                    artist: item.track.artists[0].name,
-                                    url: ''
+                                    name: `${item.track.name} - ${item.track.artists[0].name}`,
+                                    url: null
                                 })
                             }
 
+                            // Array temporario das musicas
+                            let tempS = songs
+
+                            let length = songs.length
                             let j = 0;
-                            for (let i = 0; i < songs.length; i++) {
+                            for (let i = 0; i < length; i++) {
 
-                                youtube.searchVideos(`${songs[i].artist} - ${songs[i].name}`, 1, {
-                                    videoCategoryId: 10
-                                })
+                                let sq = `${songs[i].name} ${sufix}`
+                                youtube.searchVideos(sq, 1, ytOptions)
                                     .then(video => {
+                                        if (!tempS[i] || !video[0]) return console.log(`ERROR on the start`)
 
-                                        songs[i].url = video[0].url
+                                        // Talvez seja bom mudar essa regex para a primeira palavra do nome da musica.
+                                        let r = new RegExp(tempS[i].name.split(`-`)[0].trim(), 'i')
+                                        if (he.decode(video[0].title).trim().search(r) == -1) {
+                                            //console.log(tempS[i].name.split(`-`)[0] + ` || ${he.decode(video[0].title)}`)
+                                        } else {
+                                            songs[i].url = video[0].url
+                                        }
+
                                         /** 
                                         Apenas passe as musicas para a queue quando recebermos a ultima url requisitada j e utilizado 
                                         para manter conta de quantas urls ja foram recebidas, quando j == quantidade de musicas,
                                         nos podemos passar as musicas para a queue.
                                         */
-                                        if (j === songs.length - 1) {
+                                        //console.log(`${j} - ${length - 1}`)
+                                        if (j >= length - 1) {
+                                            console.log(`finished`)
                                             queue.addSong(songs)
                                         }
 
                                         j++
                                     })
-                                    .catch(err => console.log(err))
+                                    .catch((err) => {
+                                        console.log(err)
+                                    })
                             }
                         })
                         .catch(err => console.error(err))
