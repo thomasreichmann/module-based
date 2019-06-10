@@ -24,6 +24,7 @@
     "enmap": "^4.7.1",
     "erlpack": "github:discordapp/erlpack",
     "ffmpeg": "0.0.4",
+    "he": "^1.2.0",
     "libsodium-wrappers": "^0.7.3",
     "mysql": "^2.16.0",
     "node-opus": "^0.2.9",
