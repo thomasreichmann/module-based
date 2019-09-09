@@ -26,8 +26,6 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 queue = queues[guild.id]
             }
 
-            // Test
-
             let searchQuery = args.join(" ")
 
             let service = args[0].replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split(".")[0].toLowerCase()
@@ -110,6 +108,7 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                                 .then(videos => videos.forEach(video => {
 
                                     // Talvez seja bom mudar essa regex para a primeira palavra do nome da musica.
+                                    console.log(title)
                                     let r = new RegExp(title.split(`-`)[0].trim(), 'i')
                                     if (he.decode(video.title).trim().search(r) == -1) {
                                         message.channel.send({
