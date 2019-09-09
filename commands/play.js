@@ -26,6 +26,8 @@ exports.run = ( /** @type {Discord.Client} */ client, /** @type {Discord.Message
                 queue = queues[guild.id]
             }
 
+            // Test
+
             let searchQuery = args.join(" ")
 
             let service = args[0].replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split(".")[0].toLowerCase()
