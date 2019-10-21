@@ -134,6 +134,9 @@ let j = schedule.scheduleJob('12 * * * *', () => checkName())
 
 function checkName() {
     api.Summoner.by.name('Thomas')
+    .then((summoner) => {
+        
+    })
     .catch(err => {
         if(err.statusCode == 404) {
             console.log(`Jogador nao encontrado, Nome disponivel, mandando email`);
