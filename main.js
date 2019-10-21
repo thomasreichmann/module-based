@@ -130,7 +130,7 @@ const api = Kayn(process.env.LEAGUE_API_KEY)({
 
 var schedule = require('node-schedule');
  
-let j = schedule.scheduleJob('50 * * * * *', () => checkName())
+let j = schedule.scheduleJob('12 * * * *', () => checkName())
 
 function checkName() {
     api.Summoner.by.name('Thomas')
