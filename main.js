@@ -122,6 +122,52 @@ fs.readdir("./commands/", (err, files) => {
     });
 });
 
+const {Kayn, REGIONS} = require('kayn')
+const api = Kayn('RGAPI-f34e6b08-6f29-4b3c-85eb-2de2d1bf05ec'/**Dev key, expires 22/10*/)({
+    region: REGIONS.BRAZIL
+})
+
+setInterval(checkName, 100)
+
+function checkName() {
+    api.Summoner.by.name('Thomas')
+    .then(summoner => {
+        console.log(summoner.summonerLevel)
+    })
+    .catch(err => {
+        if(err.statusCode == 404) {
+            console.log(`Jogador nao encontrado`);
+            sendAlert()
+        }
+    })
+}
+
+async function sendAlert() {
+    const nodemailer = require('nodemailer');
+    
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: "thomasarojsdfskdfn@gmail.com",
+            pass: "cbiyucidgefsuajs"
+        }
+    });
+
+    let info = await transporter.sendMail({
+        from: '"Auto Checker" <thomasarojsdfskdfn@gmail.com>', 
+        to: 'thomasarojsdfskdfn@gmail.com',
+        subject: 'Nome disponivel', 
+        text: 'Nome thomas disponivel.'
+    });
+
+    console.log('Message sent: %s', info.messageId);
+
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+}
+
+
 client.on("error", (e) => console.error(e)); // Para o bot nao crashar / crashar sem nenhuma mensagem de erro
 client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
