@@ -123,7 +123,7 @@ fs.readdir("./commands/", (err, files) => {
 });
 
 const {Kayn, REGIONS} = require('kayn')
-const api = Kayn('RGAPI-f34e6b08-6f29-4b3c-85eb-2de2d1bf05ec'/**Dev key, expires 22/10*/)({
+const api = Kayn(process.env.LEAGUE_API_KEY)({
     region: REGIONS.BRAZIL
 })
 
@@ -146,12 +146,12 @@ async function sendAlert() {
     const nodemailer = require('nodemailer');
     
     let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
+        host: process.env.SMTP_HOST,
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-            user: "thomasarojsdfskdfn@gmail.com",
-            pass: "cbiyucidgefsuajs"
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
         }
     });
 
