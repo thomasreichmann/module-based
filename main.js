@@ -122,21 +122,21 @@ fs.readdir("./commands/", (err, files) => {
     });
 });
 
+/**Coisas relacionadas ao check do nome para o lol (nao tem nada a ver com o bot) */
 const {Kayn, REGIONS} = require('kayn')
 const api = Kayn(process.env.LEAGUE_API_KEY)({
     region: REGIONS.BRAZIL
 })
 
-setInterval(checkName, 100)
+var schedule = require('node-schedule');
+ 
+let j = schedule.scheduleJob('50 * * * * *', () => checkName())
 
 function checkName() {
     api.Summoner.by.name('Thomas')
-    .then(summoner => {
-        console.log(summoner.summonerLevel)
-    })
     .catch(err => {
         if(err.statusCode == 404) {
-            console.log(`Jogador nao encontrado`);
+            console.log(`Jogador nao encontrado, Nome disponivel, mandando email`);
             sendAlert()
         }
     })
